@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <!-- 初始化连接:连接池启动时创建的初始化连接数量 -->
+        <property name="initialSize" value="2"/>
+        <!-- 最大活动连接:连接池在同一时间能够分配的最大活动连接的数量, 如果设置为非正数则表示不限制 -->
+        <property name="maxActive" value="3"/>
+        <!-- 最大空闲连接:连接池中容许保持空闲状态的最大连接数量,超过的空闲连接将被释放,如果设置为负数表示不限制 -->
+        <property name="maxIdle" value="3"/>
+        <!-- 最小空闲连接:连接池中容许保持空闲状态的最小连接数量,低于这个数量将创建新的连接,如果设置为0则不创建 -->
+        <property name="minIdle" value="1"/>
+        <!-- 最大等待时间:当没有可用连接时,连接池等待连接被归还的最大时间(以毫秒计数),超过时间则抛出异常,如果设置为-1表示无限等待 -->
+        <property name="maxWait" value="18000"/>
+        <!-- 在空闲连接回收器线程运行期间休眠的时间值,以毫秒为单位. 如果设置为非正数,则不运行空闲连接回收器线程 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <!-- 在每次空闲连接回收器线程(如果有)运行时检查的连接数量 -->
+        <property name="numTestsPerEvictionRun" value="5"/>
+        <!-- 连接在池中保持空闲而不被空闲连接回收器线程(如果有)回收的最小时间值，单位毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="180000"/>
+        <!-- 标记是否删除泄露的连接,如果他们超过了removeAbandonedTimout的限制.如果设置为true, 连接被认为是被泄露并且可以被删除,
+            如果空闲时间超过removeAbandonedTimeout. 设置为true可以为写法糟糕的没有关闭连接的程序修复数据库连接. -->
+        <property name="removeAbandoned" value="true"/>
+        <!-- 泄露的连接可以被删除的超时值, 单位秒 -->
+        <property name="removeAbandonedTimeout" value="300"/>
+        <!-- 指明是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个. 注意: 设置为true后如果要生效,validationQuery参数必须设置为非空字符串 -->
+        <property name="testOnBorrow" value="true"/>
+        <property name="validationQuery">
+            <value>SELECT 1 FROM DUAL</value>
+        </property>
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="logAbandoned" value="true"/>
+    </bean>
+
+    <bean id="surveyMysqlDataSource" parent="basicDataSource">
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/survey_db?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="1qaz@WSX"/>
+    </bean>
+
+    <bean id="surveyMysqlDataSource2" parent="basicDataSource">
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/survey_db?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+    <!-- 动态数据源 -->
+    <bean id="dataSource" class="com.jd.innovation.common.db.datasource.DynamicDataSource">
+        <property name="targetDataSources" ref="dataSourceMap"/>
+        <property name="defaultTargetDataSource" ref="surveyMysqlDataSource" />
+        <property name="dbInUse" value="1" />
+    </bean>
+
+    <util:map id="dataSourceMap" key-type="java.lang.String">
+        <entry key="1" value-ref="surveyMysqlDataSource" />
+        <entry key="2" value-ref="surveyMysqlDataSource2" />
+    </util:map>
+
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+    <!-- 事务配置 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+</beans>

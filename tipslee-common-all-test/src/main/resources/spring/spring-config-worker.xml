@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--suppress ALL -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd"
+       default-autowire="byName">
+    <context:annotation-config/>
+
+    <!--parentJobDetail-->
+    <bean id="parentJobDetail" abstract="true"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" p:targetMethod="doWork">
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!--worker调度-->
+    <bean id="scheduler" lazy-init="false" autowire="no"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="myWorkerTrigger"/>
+            </list>
+        </property>
+        <property name="quartzProperties">
+            <props>
+                <prop key="org.quartz.threadPool.threadCount">9</prop>
+                <!-- 关闭Quartz启动时的检查更新版本 -->
+                <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="myWorker" class="com.jd.innovation.common.test.worker.MyWorkerImpl"/>
+    <bean id="myWorkerTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <bean parent="parentJobDetail">
+                <property name="targetObject" ref="myWorker"/>
+            </bean>
+        </property>
+        <property name="cronExpression">
+            <value>11 0/1 * * * ?</value>
+        </property>
+    </bean>
+
+</beans>
+
+

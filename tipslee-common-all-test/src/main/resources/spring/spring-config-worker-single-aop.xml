@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+       default-autowire="byName">
+
+    <bean id="jdInstanceIdentityCreator" class="com.jd.innovation.common.task.identity.JdInstanceIdentityCreator">
+        <property name="defaultUniqueKey" value="server1" />
+    </bean>
+
+    <bean id="redisSequenceAspect" class="com.jd.innovation.common.task.sequence.RedisSequenceAspect">
+        <property name="identityCreator" ref="jdInstanceIdentityCreator" />
+        <property name="lockTimeOutSeconds" value="10"/>
+    </bean>
+
+    <aop:config>
+        <aop:aspect ref="redisSequenceAspect">
+            <aop:pointcut id="taskPointcut" expression="
+            execution (* com.jd.innovation.common.task.ISingleRunnableWorker.doWork(..))
+        "/>
+        <aop:around pointcut-ref="taskPointcut" method="lock"/>
+        <aop:after-throwing pointcut-ref="taskPointcut" method="doAfterThrowing" throwing="e"/>
+        </aop:aspect>
+    </aop:config>
+
+</beans>
