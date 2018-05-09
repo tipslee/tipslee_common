@@ -1,12 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <parent>
-        <artifactId>tipslee-common</artifactId>
-        <groupId>com.lee</groupId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
+
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.lee</groupId>
     <artifactId>tipslee-common-all-test</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Innovation Common Library Test Project</name>
     <url>http://maven.apache.org</url>
@@ -18,7 +16,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>innovation-common-all-test</finalName>
+        <finalName>tipslee-common-all-test</finalName>
         <plugins>
             <plugin>
                 <!-- war插件 -->
@@ -26,7 +24,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1</version>
                 <configuration>
-                    <warName>innovation_common</warName>
+                    <warName>tipslee_common_test</warName>
                 </configuration>
             </plugin>
         </plugins>

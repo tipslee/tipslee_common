@@ -24,8 +24,8 @@
     <import resource="spring-config-business.xml"/>
     <import resource="spring-config-dao.xml"/>
     <import resource="spring-config-datasource-dbcp.xml"/>
-    <!--<import resource="spring-config-service.xml"/>-->
-    <!--<import resource="spring-config-worker.xml"/>-->
-    <!--<import resource="spring-config-transaction.xml"/>-->
-    <!--<import resource="spring-config-worker-single-aop.xml"/>-->
+    <import resource="spring-config-service.xml"/>
+    <import resource="spring-config-worker.xml"/>
+    <import resource="spring-config-transaction.xml"/>
+    <import resource="spring-config-worker-single-aop.xml"/>
 </beans>
