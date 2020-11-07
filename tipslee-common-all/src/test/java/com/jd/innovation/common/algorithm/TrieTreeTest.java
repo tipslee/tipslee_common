@@ -10,6 +10,9 @@ import static org.junit.Assert.*;
  */
 public class TrieTreeTest {
 
+
+
+
     @Test
     public void testInsert() throws Exception {
         TrieTree trieTree = new TrieTree();
