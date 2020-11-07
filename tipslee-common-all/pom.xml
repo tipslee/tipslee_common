@@ -35,7 +35,7 @@
         <erpcas.version>1.0.2</erpcas.version>
         <login-server-rpc.version>5.2.0-SNAPSHOT</login-server-rpc.version>
         <aspectj.version>1.6.11</aspectj.version>
-        <quartz.version>1.8.5</quartz.version>
+        <quartz.version>2.3.2</quartz.version>
         <cglib-nodep.version>2.1_3</cglib-nodep.version>
         <cryptix.version>3.2.0</cryptix.version>
         <dbcp.version>1.4</dbcp.version>
